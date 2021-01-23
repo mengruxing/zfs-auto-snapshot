@@ -34,7 +34,7 @@ opt_keep=''
 opt_label=''
 opt_prefix='zfs-auto-snap'
 opt_recursive=''
-opt_sep='_'
+opt_sep='-'
 opt_setauto=''
 opt_syslog=''
 opt_skip_scrub=''
@@ -407,7 +407,7 @@ then
 	if [ -n "$opt_label" ]
 	then
 		SNAPSHOTS_OLD=$(env LC_ALL=C zfs list -H -t snapshot -o name -s name | \
-			grep "$opt_prefix"_"$opt_label" | \
+			grep "$opt_prefix$opt_sep$opt_label" | \
 			awk '{ print substr( $0, length($0) - 14, length($0) ) " " $0}' | \
 			sort -r -k1,1 -k2,2 | \
 			awk '{ print substr( $0, 17, length($0) )}') \
@@ -585,7 +585,7 @@ SNAPPROP="-o com.sun:auto-snapshot-desc='$opt_event'"
 # ISO style date; fifteen characters: YYYY-MM-DD-HHMM
 # On Solaris %H%M expands to 12h34.
 # We use the shortfirm -u here because --utc is not supported on macos.
-DATE=$(date -u +%F-%H%M)
+DATE=$(date +%F-%H%M)
 
 # The snapshot name after the @ symbol.
 SNAPNAME="${opt_prefix:+$opt_prefix$opt_sep}${opt_label:+$opt_label}-$DATE"
